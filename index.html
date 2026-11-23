@@ -6,7 +6,7 @@
   <title>Esther 15 Anos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,55 +27,56 @@
   <!-- Container Geral da Aplicação -->
   <main class="app-viewport">
 
-    <!-- CENA 1: Capa (Foto) e Vídeo da Animação -->
+    <!-- CENA 1: Capa (Foto) e Vídeo da Animação (Fullscreen) -->
     <section id="stage-intro" class="fullscreen-scene active">
-      <!-- Foto de capa estática -->
-      <picture id="cover-picture">
-        <source srcset="assets/capa-hd.png" type="image/png">
-        <img src="Esther 15 anos-2.png" alt="Esther 15 Anos" class="media-fullscreen" id="cover-img">
-      </picture>
+      <img src="capa-hd.png" alt="Esther 15 Anos" class="media-fullscreen" id="cover-img">
 
-      <!-- Vídeo da animação -->
       <video
         id="anim-video"
         class="media-fullscreen video-layer"
         playsinline
         webkit-playsinline
         preload="auto">
-        <source src="assets/video.mp4" type="video/mp4">
+        <source src="Animate this image into a magica 506412 Bsj.mp4" type="video/mp4">
       </video>
     </section>
 
-    <!-- CENA 2: Tela 2 com transição suave e botões interativos -->
+    <!-- CENA 2: Tela 2 em Fullscreen total -->
     <section id="stage-screen2" class="fullscreen-scene">
-      <div class="screen2-inner">
-        <!-- Imagem de fundo da tela 2 -->
-        <img src="assets/tela2.png" alt="Informações do Convite" class="media-fullscreen screen2-img">
+      <img src="tela2.png" alt="Informações do Convite" class="canvas-bg" id="screen2-img">
 
-        <!-- Botão de Voltar (Canto superior direito com opacidade reduzida) -->
-        <button id="btn-back" class="btn-back" aria-label="Voltar para o início">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          <span>Início</span>
-        </button>
+      <!-- Botão Voltar para a capa (Canto superior direito) -->
+      <button id="btn-back-intro" class="btn-back" aria-label="Voltar para o início">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Voltar</span>
+      </button>
 
-        <!-- Botões Interativos (Semi-transparentes para ajuste de posição) -->
-        <!-- 1. Botão circular: Confirmar Presença -->
-        <button id="btn-confirmar" class="hotspot hotspot-circle" title="Confirmar Presença">
-          <span class="hotspot-label">Confirmar Presença</span>
-        </button>
+      <!-- Camada de botões posicionados de acordo com o object-fit da imagem -->
+      <div class="screen2-canvas" id="screen2-canvas">
+        <!-- 1. Confirmar Presença (Esquerda) -->
+        <button id="btn-confirmar" class="hotspot-circle" aria-label="Confirmar Presença" title="Confirmar Presença"></button>
 
-        <!-- 2. Botão: Como Chegar -->
-        <button id="btn-chegar" class="hotspot hotspot-rect" title="Como Chegar">
-          <span class="hotspot-label">Como Chegar</span>
-        </button>
+        <!-- 2. Como Chegar (Centro) -->
+        <button id="btn-chegar" class="hotspot-circle" aria-label="Como Chegar" title="Como Chegar"></button>
 
-        <!-- 3. Botão: Sugestão de Presentes -->
-        <button id="btn-presentes" class="hotspot hotspot-rect" title="Sugestão de Presentes">
-          <span class="hotspot-label">Sugestão de Presentes</span>
-        </button>
+        <!-- 3. Sugestão de Presentes (Direita) -->
+        <button id="btn-presentes" class="hotspot-circle" aria-label="Sugestão de Presentes" title="Sugestão de Presentes"></button>
       </div>
+    </section>
+
+    <!-- CENA 3: Tela de Sugestão de Presentes em Fullscreen -->
+    <section id="stage-presentes" class="fullscreen-scene">
+      <img src="sugestãopresentes.png" alt="Sugestão de Presentes" class="canvas-bg" id="presentes-img">
+
+      <!-- Botão Voltar para a Tela 2 -->
+      <button id="btn-back-tela2" class="btn-back" aria-label="Voltar para o convite">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Voltar</span>
+      </button>
     </section>
 
   </main>
@@ -83,15 +84,77 @@
   <script>
     const stageIntro = document.getElementById('stage-intro');
     const stageScreen2 = document.getElementById('stage-screen2');
+    const stagePresentes = document.getElementById('stage-presentes');
+
     const video = document.getElementById('anim-video');
-    const coverPic = document.getElementById('cover-picture');
-    const btnBack = document.getElementById('btn-back');
+    const coverImg = document.getElementById('cover-img');
+
+    const btnBackIntro = document.getElementById('btn-back-intro');
+    const btnBackTela2 = document.getElementById('btn-back-tela2');
+
+    const btnConfirmar = document.getElementById('btn-confirmar');
+    const btnChegar = document.getElementById('btn-chegar');
+    const btnPresentes = document.getElementById('btn-presentes');
+
+    // Dimensões originais de tela2.png
+    const NATURAL_WIDTH = 941;
+    const NATURAL_HEIGHT = 1671;
+
+    // Coordenadas originais perfeitas na imagem (em pixels)
+    const C1_X = 254; // Confirmar Presença
+    const C2_X = 473; // Como Chegar
+    const C3_X = 695; // Sugestão de Presentes
+    const C_Y  = 1264; // Centro Y
+    const DIAMETER = 126; // Diâmetro do círculo
+
+    // Calcula a posição real dos botões sobre a imagem com object-fit: cover em fullscreen
+    function updateButtonPositions() {
+      const containerW = window.innerWidth;
+      const containerH = window.innerHeight;
+
+      const containerRatio = containerW / containerH;
+      const imgRatio = NATURAL_WIDTH / NATURAL_HEIGHT;
+
+      let renderedW, renderedH, offsetX, offsetY;
+
+      if (containerRatio > imgRatio) {
+        renderedW = containerW;
+        renderedH = containerW / imgRatio;
+        offsetX = 0;
+        offsetY = (containerH - renderedH) / 2;
+      } else {
+        renderedH = containerH;
+        renderedW = containerH * imgRatio;
+        offsetX = (containerW - renderedW) / 2;
+        offsetY = 0;
+      }
+
+      const scale = renderedW / NATURAL_WIDTH;
+      const btnSize = DIAMETER * scale;
+
+      function placeButton(btn, origX) {
+        const x = offsetX + (origX * scale);
+        const y = offsetY + (C_Y * scale);
+        btn.style.left = `${x}px`;
+        btn.style.top = `${y}px`;
+        btn.style.width = `${btnSize}px`;
+        btn.style.height = `${btnSize}px`;
+      }
+
+      placeButton(btnConfirmar, C1_X);
+      placeButton(btnChegar, C2_X);
+      placeButton(btnPresentes, C3_X);
+    }
+
+    window.addEventListener('resize', updateButtonPositions);
+    window.addEventListener('orientationchange', updateButtonPositions);
+    updateButtonPositions();
 
     // Ao clicar na capa inicial: dispara o vídeo
     stageIntro.addEventListener('click', () => {
       if (video.paused) {
         video.play().then(() => {
-          coverPic.classList.add('hidden');
+          coverImg.classList.add('hidden');
           video.classList.add('playing');
         }).catch((err) => {
           console.error("Erro ao reproduzir vídeo:", err);
@@ -101,39 +164,52 @@
 
     // Ao finalizar o vídeo: transição suave para a Tela 2
     video.addEventListener('ended', () => {
-      // Fade out da introdução e fade in da tela 2
       stageIntro.classList.remove('active');
       stageScreen2.classList.add('active');
+      updateButtonPositions();
     });
 
-    // Botão Voltar (Canto superior direito)
-    btnBack.addEventListener('click', (e) => {
+    // Botão Voltar da Tela 2 -> Capa inicial
+    btnBackIntro.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Volta para a capa inicial
       stageScreen2.classList.remove('active');
       stageIntro.classList.add('active');
       
-      // Reseta o vídeo e reexibe a foto estática
       video.pause();
       video.currentTime = 0;
       video.classList.remove('playing');
-      coverPic.classList.remove('hidden');
+      coverImg.classList.remove('hidden');
     });
 
-    // Ações de teste dos botões da tela 2
-    document.getElementById('btn-confirmar').addEventListener('click', (e) => {
+    // Botão 3: Sugestão de Presentes -> Vai suavemente para a foto de presentes
+    btnPresentes.addEventListener('click', (e) => {
       e.stopPropagation();
-      console.log('Clique em: Confirmar Presença');
+      stageScreen2.classList.remove('active');
+      stagePresentes.classList.add('active');
     });
 
-    document.getElementById('btn-chegar').addEventListener('click', (e) => {
+    // Botão Voltar da Tela de Presentes -> Retorna para a Tela 2
+    btnBackTela2.addEventListener('click', (e) => {
       e.stopPropagation();
-      console.log('Clique em: Como Chegar');
+      stagePresentes.classList.remove('active');
+      stageScreen2.classList.add('active');
+      updateButtonPositions();
     });
 
-    document.getElementById('btn-presentes').addEventListener('click', (e) => {
+    // Botão 1: Confirmar Presença -> Redireciona para o WhatsApp com mensagem pronta
+    btnConfirmar.addEventListener('click', (e) => {
       e.stopPropagation();
-      console.log('Clique em: Sugestão de Presentes');
+      const phone = "5531975308970";
+      const message = "Olá! Gostaria de confirmar minha presença nos 15 anos da Esther! ✨";
+      const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    });
+
+    // Botão 2: Como Chegar -> Redireciona para o Google Maps
+    btnChegar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("Castelo Sonhare Brodoski, Rua Flor da Serra, 11, Quintas do Godoy, Betim - MG, 32616-020");
+      window.open(mapsUrl, '_blank');
     });
   </script>
 
