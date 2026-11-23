@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Esther 15 Anos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Mensagem de bloqueio para telas horizontais ou computadores -->
+  <aside class="orientation-blocker" aria-live="polite">
+    <div class="blocker-content">
+      <div class="phone-icon-anim">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+      </div>
+      <p>para uma experiencia completa abra no celular na vertical</p>
+    </div>
+  </aside>
+
+  <!-- Container Geral da Aplicação -->
+  <main class="app-viewport">
+
+    <!-- CENA 1: Capa (Foto) e Vídeo da Animação -->
+    <section id="stage-intro" class="fullscreen-scene active">
+      <!-- Foto de capa estática -->
+      <picture id="cover-picture">
+        <source srcset="assets/capa-hd.png" type="image/png">
+        <img src="Esther 15 anos-2.png" alt="Esther 15 Anos" class="media-fullscreen" id="cover-img">
+      </picture>
+
+      <!-- Vídeo da animação -->
+      <video
+        id="anim-video"
+        class="media-fullscreen video-layer"
+        playsinline
+        webkit-playsinline
+        preload="auto">
+        <source src="assets/video.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <!-- CENA 2: Tela 2 com transição suave e botões interativos -->
+    <section id="stage-screen2" class="fullscreen-scene">
+      <div class="screen2-inner">
+        <!-- Imagem de fundo da tela 2 -->
+        <img src="assets/tela2.png" alt="Informações do Convite" class="media-fullscreen screen2-img">
+
+        <!-- Botão de Voltar (Canto superior direito com opacidade reduzida) -->
+        <button id="btn-back" class="btn-back" aria-label="Voltar para o início">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Início</span>
+        </button>
+
+        <!-- Botões Interativos (Semi-transparentes para ajuste de posição) -->
+        <!-- 1. Botão circular: Confirmar Presença -->
+        <button id="btn-confirmar" class="hotspot hotspot-circle" title="Confirmar Presença">
+          <span class="hotspot-label">Confirmar Presença</span>
+        </button>
+
+        <!-- 2. Botão: Como Chegar -->
+        <button id="btn-chegar" class="hotspot hotspot-rect" title="Como Chegar">
+          <span class="hotspot-label">Como Chegar</span>
+        </button>
+
+        <!-- 3. Botão: Sugestão de Presentes -->
+        <button id="btn-presentes" class="hotspot hotspot-rect" title="Sugestão de Presentes">
+          <span class="hotspot-label">Sugestão de Presentes</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const stageIntro = document.getElementById('stage-intro');
+    const stageScreen2 = document.getElementById('stage-screen2');
+    const video = document.getElementById('anim-video');
+    const coverPic = document.getElementById('cover-picture');
+    const btnBack = document.getElementById('btn-back');
+
+    // Ao clicar na capa inicial: dispara o vídeo
+    stageIntro.addEventListener('click', () => {
+      if (video.paused) {
+        video.play().then(() => {
+          coverPic.classList.add('hidden');
+          video.classList.add('playing');
+        }).catch((err) => {
+          console.error("Erro ao reproduzir vídeo:", err);
+        });
+      }
+    });
+
+    // Ao finalizar o vídeo: transição suave para a Tela 2
+    video.addEventListener('ended', () => {
+      // Fade out da introdução e fade in da tela 2
+      stageIntro.classList.remove('active');
+      stageScreen2.classList.add('active');
+    });
+
+    // Botão Voltar (Canto superior direito)
+    btnBack.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Volta para a capa inicial
+      stageScreen2.classList.remove('active');
+      stageIntro.classList.add('active');
+      
+      // Reseta o vídeo e reexibe a foto estática
+      video.pause();
+      video.currentTime = 0;
+      video.classList.remove('playing');
+      coverPic.classList.remove('hidden');
+    });
+
+    // Ações de teste dos botões da tela 2
+    document.getElementById('btn-confirmar').addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('Clique em: Confirmar Presença');
+    });
+
+    document.getElementById('btn-chegar').addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('Clique em: Como Chegar');
+    });
+
+    document.getElementById('btn-presentes').addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('Clique em: Sugestão de Presentes');
+    });
+  </script>
+
+</body>
+</html>
