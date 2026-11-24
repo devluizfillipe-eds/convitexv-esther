@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Esther 15 Anos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <!-- Mensagem de bloqueio para telas horizontais ou computadores -->
   <aside class="orientation-blocker" aria-live="polite">
     <div class="blocker-content">
       <div class="phone-icon-anim">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
           <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
           <line x1="12" y1="18" x2="12.01" y2="18"></line>
         </svg>
@@ -24,6 +28,11 @@
     </div>
   </aside>
 
+  <!-- Áudio da música de fundo -->
+  <audio id="bg-music" preload="auto">
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+
   <!-- Container Geral da Aplicação -->
   <main class="app-viewport">
 
@@ -31,12 +40,8 @@
     <section id="stage-intro" class="fullscreen-scene active">
       <img src="capa-hd.png" alt="Esther 15 Anos" class="media-fullscreen" id="cover-img">
 
-      <video
-        id="anim-video"
-        class="media-fullscreen video-layer"
-        playsinline
-        webkit-playsinline
-        preload="auto">
+      <!-- Vídeo em mudo para a música de fundo ser o áudio principal com perfeita harmonia -->
+      <video id="anim-video" class="media-fullscreen video-layer" playsinline webkit-playsinline muted preload="auto">
         <source src="Animate this image into a magica 506412 Bsj.mp4" type="video/mp4">
       </video>
     </section>
@@ -47,7 +52,8 @@
 
       <!-- Botão Voltar para a capa (Canto superior direito) -->
       <button id="btn-back-intro" class="btn-back" aria-label="Voltar para o início">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
         <span>Voltar</span>
@@ -56,23 +62,26 @@
       <!-- Camada de botões posicionados de acordo com o object-fit da imagem -->
       <div class="screen2-canvas" id="screen2-canvas">
         <!-- 1. Confirmar Presença (Esquerda) -->
-        <button id="btn-confirmar" class="hotspot-circle" aria-label="Confirmar Presença" title="Confirmar Presença"></button>
+        <button id="btn-confirmar" class="hotspot-circle" aria-label="Confirmar Presença"
+          title="Confirmar Presença"></button>
 
         <!-- 2. Como Chegar (Centro) -->
         <button id="btn-chegar" class="hotspot-circle" aria-label="Como Chegar" title="Como Chegar"></button>
 
         <!-- 3. Sugestão de Presentes (Direita) -->
-        <button id="btn-presentes" class="hotspot-circle" aria-label="Sugestão de Presentes" title="Sugestão de Presentes"></button>
+        <button id="btn-presentes" class="hotspot-circle" aria-label="Sugestão de Presentes"
+          title="Sugestão de Presentes"></button>
       </div>
     </section>
 
     <!-- CENA 3: Tela de Sugestão de Presentes em Fullscreen -->
     <section id="stage-presentes" class="fullscreen-scene">
-      <img src="sugestãopresentes.png" alt="Sugestão de Presentes" class="canvas-bg" id="presentes-img">
+      <img src="sugestãopresente.png" alt="Sugestão de Presentes" class="canvas-bg" id="presentes-img">
 
       <!-- Botão Voltar para a Tela 2 -->
       <button id="btn-back-tela2" class="btn-back" aria-label="Voltar para o convite">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
         <span>Voltar</span>
@@ -88,6 +97,7 @@
 
     const video = document.getElementById('anim-video');
     const coverImg = document.getElementById('cover-img');
+    const bgMusic = document.getElementById('bg-music');
 
     const btnBackIntro = document.getElementById('btn-back-intro');
     const btnBackTela2 = document.getElementById('btn-back-tela2');
@@ -104,8 +114,24 @@
     const C1_X = 254; // Confirmar Presença
     const C2_X = 473; // Como Chegar
     const C3_X = 695; // Sugestão de Presentes
-    const C_Y  = 1264; // Centro Y
+    const C_Y = 1264; // Centro Y
     const DIAMETER = 126; // Diâmetro do círculo
+
+    let musicStarted = false;
+
+    // Inicia a música aos 44 segundos e garante que toque até o fim
+    function startMusic() {
+      if (!musicStarted) {
+        bgMusic.currentTime = 44;
+        bgMusic.play().then(() => {
+          musicStarted = true;
+        }).catch((err) => {
+          console.warn("Autoplay da música bloqueado ou aguardando interação:", err);
+        });
+      } else if (bgMusic.paused) {
+        bgMusic.play();
+      }
+    }
 
     // Calcula a posição real dos botões sobre a imagem com object-fit: cover em fullscreen
     function updateButtonPositions() {
@@ -150,8 +176,12 @@
     window.addEventListener('orientationchange', updateButtonPositions);
     updateButtonPositions();
 
-    // Ao clicar na capa inicial: dispara o vídeo
+    // Ao clicar na capa inicial: dispara o vídeo e a música a partir de 44 segundos
     stageIntro.addEventListener('click', () => {
+      // 1. Toca a música a partir de 44s
+      startMusic();
+
+      // 2. Dispara o vídeo
       if (video.paused) {
         video.play().then(() => {
           coverImg.classList.add('hidden');
@@ -162,7 +192,7 @@
       }
     });
 
-    // Ao finalizar o vídeo: transição suave para a Tela 2
+    // Ao finalizar o vídeo: transição suave para a Tela 2 (a música CONTINUA tocando!)
     video.addEventListener('ended', () => {
       stageIntro.classList.remove('active');
       stageScreen2.classList.add('active');
@@ -174,11 +204,12 @@
       e.stopPropagation();
       stageScreen2.classList.remove('active');
       stageIntro.classList.add('active');
-      
+
       video.pause();
       video.currentTime = 0;
       video.classList.remove('playing');
       coverImg.classList.remove('hidden');
+      // A música continua tocando normalmente até o fim
     });
 
     // Botão 3: Sugestão de Presentes -> Vai suavemente para a foto de presentes
@@ -196,7 +227,7 @@
       updateButtonPositions();
     });
 
-    // Botão 1: Confirmar Presença -> Redireciona para o WhatsApp com mensagem pronta
+    // Botão 1: Confirmar Presença -> WhatsApp
     btnConfirmar.addEventListener('click', (e) => {
       e.stopPropagation();
       const phone = "5531975308970";
@@ -205,7 +236,7 @@
       window.open(whatsappUrl, '_blank');
     });
 
-    // Botão 2: Como Chegar -> Redireciona para o Google Maps
+    // Botão 2: Como Chegar -> Google Maps
     btnChegar.addEventListener('click', (e) => {
       e.stopPropagation();
       const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("Castelo Sonhare Brodoski, Rua Flor da Serra, 11, Quintas do Godoy, Betim - MG, 32616-020");
@@ -214,4 +245,5 @@
   </script>
 
 </body>
+
 </html>
